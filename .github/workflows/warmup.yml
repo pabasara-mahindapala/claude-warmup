@@ -2,7 +2,7 @@ name: Claude Code Warmup
 
 on:
   schedule:
-    - cron: ${{ vars.WARMUP_CRON || '45 0 * * 1-5' }}
+    - cron: '45 0 * * 1-5'
   workflow_dispatch: {}
 
 jobs:
