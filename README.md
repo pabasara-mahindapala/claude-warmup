@@ -2,8 +2,6 @@
 
 Manipulate Claude Code's 5-hour usage window into resetting when you actually need it.
 
-EDIT: You can apply the same concept and achieve the exact same goal in a "native" way by using a Claude Code Web scheduled task: https://claude.ai/code/scheduled. It works flawlessly! The "Why" section below is still very useful for visualizing why would you do this at all.
-
 ## Why
 
 Claude Code gives you a token budget that resets every 5 hours. The window starts when you send your first message, floored to the clock hour.
@@ -28,7 +26,7 @@ After:       [========== window 1 =========]
               ░░ idle ░░  work ~8:30am-11am
                                            [========== window 2 =========]
                                                    work ~11am-4pm
-                                                                         [== win 3 ==]
+                                                                         [== window 3 ==]
                                                                          work ~4pm-6pm
 ```
 
@@ -118,7 +116,7 @@ Some things about how Claude Code's 5-hour window actually works that aren't wel
 **Can I run this locally instead?**
 Yeah. `claude -p "hi" --model haiku --no-session-persistence` in a cron or macOS launchd does the same thing. GitHub Actions is just easier because your machine doesn't need to be awake at 6 AM.
 
-**Token expiry?** About a year. Set a reminder.
+**Token expiry?** About a year. Who knows if after one year we'll be even using Claude Code?
 
 ## License
 
