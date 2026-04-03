@@ -64,16 +64,20 @@ Paste when prompted.
 
 ### 4. Set your schedule
 
-Default is weekdays at 12:45 AM UTC (IST 6:15 AM). Edit the cron line in `.github/workflows/warmup.yml` directly:
+Default is weekdays at 6:15 AM IST (UTC+5:30). Adjust as needed.
 
-```yaml
+GitHub Actions requires `on.schedule.cron` to be a literal value in the workflow file, so changing the schedule means editing `.github/workflows/warmup.yml` and updating this line:
+
+```yml
 - cron: '45 0 * * 1-5'
 ```
 
 That's a standard cron expression in UTC. Common conversions:
 
+Need help generating one? Try [crontab.guru](https://crontab.guru/#15_9_*_*_1-5).
+
 | Timezone | 6:15 AM local in UTC | Cron |
-|---|---|---|
+| --- | --- | --- |
 | US Pacific (UTC-7) | 1:15 PM | `15 13 * * 1-5` |
 | US Eastern (UTC-4) | 10:15 AM | `15 10 * * 1-5` |
 | US Central (UTC-5) | 11:15 AM | `15 11 * * 1-5` |
@@ -87,8 +91,24 @@ Pick something 2-4 hours before you usually start working (really depends on you
 
 ### 5. Test it
 
+If this is a fresh fork, open the repo's `Actions` tab once and enable workflows if GitHub asks.
+
+Optional but useful: set your fork as the default GitHub CLI target in this clone.
+
 ```bash
-gh workflow run warmup.yml
+gh repo set-default <your-user>/claude-warmup
+```
+
+```bash
+gh workflow run warmup.yml --repo <your-user>/claude-warmup
+```
+
+Check workflow status:
+
+```bash
+gh workflow list --repo <your-user>/claude-warmup
+gh run list --workflow warmup.yml --repo <your-user>/claude-warmup
+gh run view --log --repo <your-user>/claude-warmup
 ```
 
 Check the logs. You should see a Haiku response or a rate-limit message. Both mean it worked.
@@ -117,6 +137,23 @@ Some things about how Claude Code's 5-hour window actually works that aren't wel
 Yeah. `claude -p "hi" --model haiku --no-session-persistence` in a cron or macOS launchd does the same thing. GitHub Actions is just easier because your machine doesn't need to be awake at 6 AM.
 
 **Token expiry?** About a year. Who knows if after one year we'll be even using Claude Code?
+
+## Troubleshooting
+
+**`workflow not found on the default branch`**
+The workflow file is missing from your fork's default branch, or GitHub Actions has not been enabled for the fork yet. Push `.github/workflows/warmup.yml` to your fork's default branch, then open the `Actions` tab once and enable workflows if prompted.
+
+**`Must have admin rights to Repository`**
+You're probably dispatching against the upstream repo instead of your fork. Run `gh workflow run warmup.yml --repo <your-user>/claude-warmup` or set the default with `gh repo set-default <your-user>/claude-warmup`.
+
+**`CLAUDE_OAUTH_TOKEN secret is not set`**
+Add the secret in your fork under `Settings > Secrets and variables > Actions`, then rerun the workflow.
+
+**`Claude token appears invalid or expired`**
+Run `claude setup-token` on a machine where you're logged into Claude Code, then update the `CLAUDE_OAUTH_TOKEN` secret in your fork and rerun the workflow. The warmup step checks for this directly.
+
+**Unexpected Claude CLI failure**
+Check the workflow logs. The job now prints the full Claude CLI output and only treats explicit rate-limit responses as expected.
 
 ## License
 
