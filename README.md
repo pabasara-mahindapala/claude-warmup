@@ -64,28 +64,20 @@ Paste when prompted.
 
 ### 4. Set your schedule
 
-Default is weekdays at 6:15 AM IST (UTC+5:30). Adjust as needed.
+Default runs daily at 6:15 AM, 11:30 AM, 4:45 PM, and 10:00 PM IST (UTC+5:30). Adjust as needed.
 
-GitHub Actions requires `on.schedule.cron` to be a literal value in the workflow file, so changing the schedule means editing `.github/workflows/warmup.yml` and updating this line:
+GitHub Actions requires `on.schedule.cron` to be a literal value in the workflow file, so changing the schedule means editing `.github/workflows/warmup.yml` directly:
 
 ```yml
-- cron: '45 0 * * 1-5'
+- cron: '45 0 * * *'   # 6:15 AM IST
+- cron: '0 6 * * *'    # 11:30 AM IST
+- cron: '15 11 * * *'  # 4:45 PM IST
+- cron: '30 16 * * *'  # 10:00 PM IST
 ```
 
-That's a standard cron expression in UTC. Common conversions:
+Those are standard cron expressions in UTC.
 
-Need help generating one? Try [crontab.guru](https://crontab.guru/#15_9_*_*_1-5).
-
-| Timezone | 6:15 AM local in UTC | Cron |
-| --- | --- | --- |
-| US Pacific (UTC-7) | 1:15 PM | `15 13 * * 1-5` |
-| US Eastern (UTC-4) | 10:15 AM | `15 10 * * 1-5` |
-| US Central (UTC-5) | 11:15 AM | `15 11 * * 1-5` |
-| Central Europe (UTC+2) | 4:15 AM | `15 4 * * 1-5` |
-| Brazil BRT (UTC-3) | 9:15 AM | `15 9 * * 1-5` |
-| India IST (UTC+5:30) | 12:45 AM | `45 0 * * 1-5` |
-| Japan JST (UTC+9) | 9:15 PM prev day | `15 21 * * 0-4` |
-| Australia AEST (UTC+10) | 8:15 PM prev day | `15 20 * * 0-4` |
+Need help generating different offsets? Try [crontab.guru](https://crontab.guru/).
 
 Pick something 2-4 hours before you usually start working (really depends on your usage pattern).
 
